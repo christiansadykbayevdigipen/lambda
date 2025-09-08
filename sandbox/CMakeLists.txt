@@ -10,4 +10,6 @@ link_libraries(-llambda)
 
 include_directories(${CMAKE_SOURCE_DIR}/lambda/src)
 
+add_definitions(-DDEBUG)
+
 add_executable(sandbox src/main.cpp)
