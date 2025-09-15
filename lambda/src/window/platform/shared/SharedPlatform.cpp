@@ -5,24 +5,28 @@
 #include "core.h"
 
 #include <SDL3/SDL.h>
+#include <cinttypes>
 
 namespace lambda {
     
     void SharedWindow::Init(u32 width, u32 height, const std::string& title, RenderingAPI api) {
         LAMBDA_AUTOTRACE();
         m_CurrentClosingState = false;
+        m_InitializedAPI = api;
         
         SDL_Init(SDL_INIT_VIDEO);
         
         unsigned long flag = SDL_WINDOW_RESIZABLE;
         
         switch(api) {
-            case RenderingAPI_Vulkan:
+        case RenderingAPI_Vulkan:
             flag = flag | SDL_WINDOW_VULKAN;
             break;
-            default:
-            flag = flag | SDL_WINDOW_VULKAN;
-            LAMBDA_WARN("lambda::SharedWindow::Init encountered a problem. The rendering API given to the SharedWindow does not exist, thus, it is falling back on Vulkan.");
+        case RenderingAPI_OpenGL:
+            flag = flag | SDL_WINDOW_OPENGL;
+            break;
+        default:
+            LAMBDA_FATAL("lambda::SharedWindow::Init encountered an unrecoverable error. The rendering API given to the SharedWindow does not exist, thus, unsure of what API to give the window.");
             break;
         }
         
@@ -31,6 +35,13 @@ namespace lambda {
         if(m_Window == nullptr) {
             LAMBDA_FATAL("lambda::SharedWindow::Init has encountered an unrecoverable error. SDL_CreateWindow has returned a null pointer.");
             return;
+        }
+
+        if(api == RenderingAPI_OpenGL) {
+            if(!SDL_GL_CreateContext(m_Window)) {
+                LAMBDA_FATAL("lambda::SharedWindow::Init has encountered an unrecoverable error. SDL returned an error: ", SDL_GetError());
+                return;
+            }
         }
         
         SDL_ShowWindow(m_Window);
@@ -80,5 +91,14 @@ namespace lambda {
         }
 
         return reinterpret_cast<void*>(surface);
+    }
+
+    void SharedWindow::SwapOpenGLBuffers() {
+        if(m_InitializedAPI != RenderingAPI_OpenGL) {
+            LAMBDA_ERROR("lambda::SharedWindow::SwapOpenGLBuffers has encountered an error. The initialized API for SharedWindow is not OpenGL, but SwapOpenGLBuffers is being called. This is illegal.");
+            return;
+        }
+
+        SDL_GL_SwapWindow(m_Window);
     }
 }

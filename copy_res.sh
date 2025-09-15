@@ -1,0 +1,1 @@
+cp -r res/ build/sandbox/res

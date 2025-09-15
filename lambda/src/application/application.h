@@ -23,7 +23,7 @@ namespace lambda {
 		virtual void OnUpdate() {}
 		virtual void OnRender() {}
 		virtual void OnDestroy() {}
-	private:
+	protected:
 		std::shared_ptr<IWindow> m_Window;
 		std::shared_ptr<IRenderer> m_Renderer;
 	};

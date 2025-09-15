@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../window.h"
+#include "core.h"
 
 struct SDL_Window;
 
@@ -16,8 +17,11 @@ namespace lambda {
         virtual std::vector<const char*> GetVulkanRequiredInstanceExtensions() override;
 
         virtual void* CreateVulkanSurface(void* instance) override;
+
+        virtual void SwapOpenGLBuffers() override;
     private:
         SDL_Window* m_Window;
         bool m_CurrentClosingState;
+        RenderingAPI m_InitializedAPI;
     };
 }

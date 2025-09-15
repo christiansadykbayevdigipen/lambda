@@ -68,6 +68,7 @@ static_assert(sizeof(f64) == 8, "The size of a double must be exactly eight byte
 // Rendering Api
 namespace lambda {
     enum RenderingAPI {
-        RenderingAPI_Vulkan
+        RenderingAPI_Vulkan,
+        RenderingAPI_OpenGL
     };
 }

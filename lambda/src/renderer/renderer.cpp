@@ -2,6 +2,7 @@
 #include "core.h"
 
 #include "api/VulkanRenderer.h"
+#include "api/OpenGLRenderer.h"
 
 namespace lambda {
 	std::shared_ptr<IRenderer> IRenderer::CreateRenderer(std::shared_ptr<IWindow> window, RenderingAPI api) {
@@ -10,6 +11,9 @@ namespace lambda {
 		std::shared_ptr<IRenderer> renderer = nullptr;
 
 		switch(api) {
+		case RenderingAPI_OpenGL:
+			renderer = std::make_shared<OpenGLRenderer>();
+			break;
 		case RenderingAPI_Vulkan:
 			renderer = std::make_shared<VulkanRenderer>();
 			break;
